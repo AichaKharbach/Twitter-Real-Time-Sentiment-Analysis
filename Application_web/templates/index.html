@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Twitter Sentiment Predictions</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #0056b3;
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            width: 100%; /* Adjust width as necessary */
+        }
+
+        li {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-top: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #predictions li {
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+    <script>
+        let predictions = [];
+        let currentIndex = 0;
+        let loading = true;
+
+        async function fetchPredictions() {
+            const response = await fetch('/predictions');
+            predictions = await response.json();
+            loading = false;
+            document.getElementById('predictions').innerHTML = ''; // Clear the loading message
+            showNextPrediction();
+        }
+
+        function showNextPrediction() {
+            if (predictions.length > 0 && !loading) {
+                const prediction = predictions[currentIndex];
+                const predictionText = `Tweet ID: ${prediction["Tweet ID"]}, Entity: ${prediction.Entity}, Content: ${prediction["Tweet content"]}, Prediction: ${prediction.prediction}`;
+                
+                const listItem = document.createElement('li');
+                listItem.innerText = predictionText;
+                document.getElementById('predictions').appendChild(listItem);
+                
+                currentIndex = (currentIndex + 1) % predictions.length;
+            } else if (loading) {
+                document.getElementById('predictions').innerText = "Loading predictions...";
+            }
+        }
+
+        setInterval(showNextPrediction, 5000);
+        window.onload = fetchPredictions;
+    </script>
+</head>
+<body>
+    <h1>Twitter Sentiment Predictions</h1>
+    <ul id="predictions">
+        <li>Loading predictions...</li>
+    </ul>
+</body>
+</html>
