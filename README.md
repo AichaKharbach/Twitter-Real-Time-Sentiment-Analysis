@@ -1,7 +1,7 @@
-# Twitter-Real-Time-Sentiment-Analysis# Analyse de Sentiment en Temps Réel sur Twitter
+# Analyse de Sentiment en Temps Réel sur Twitter
 
 ## Description du Projet
-Ce projet implémente un système d'analyse de sentiment en temps réel pour les tweets, utilisant une architecture distribuée :
+Ce projet implémente un système d'analyse de sentiment en temps réel pour les tweets, utilisant une architecture distribuée intégrant Apache Kafka, Apache Spark, et MongoDB. Ce système permet de classifier les sentiments des tweets en temps réel et de présenter ces résultats via une interface web interactive développée avec Flask.
 
 ## Technologies Utilisées
 - **Apache Kafka**: Pour le streaming en temps réel des tweets.
