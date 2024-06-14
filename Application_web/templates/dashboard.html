@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <style>
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .metric-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .metric-container h2 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .metric-container p {
+            margin: 5px 0;
+            font-size: 36px;
+            color: #333;
+        }
+
+        .metric-container i.positive-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #007bff; /* Blue */
+        }
+
+        .metric-container i.negative-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #dc3545; /* Red */
+        }
+
+        .metric-container i.neutral-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #28a745; /* Green */
+        }
+
+        .metric-container i.irrelevant-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #ffc107; /* Yellow */
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        async function fetchChartData() {
+            const response = await fetch('/chart-data');
+            const data = await response.json();
+            return data;
+        }
+
+        async function createCharts() {
+            const data = await fetchChartData();
+
+            const labels = data.labels;
+            const chartData = data.data;
+
+            // Display metrics
+            document.getElementById('positiveCount').innerText = chartData[labels.indexOf('Positive')];
+            document.getElementById('negativeCount').innerText = chartData[labels.indexOf('Negative')];
+            document.getElementById('neutralCount').innerText = chartData[labels.indexOf('Neutral')];
+            document.getElementById('irrelevantCount').innerText = chartData[labels.indexOf('Irrelevant')];
+        }
+
+        window.onload = createCharts;
+    </script>
+</head>
+<body>
+    <h1></h1>
+    <h1></h1>
+    <div class="metrics-grid">
+        <div class="metric-container">
+            <i class="fas fa-smile positive-icon"></i>
+            <h2>Positive</h2>
+            <p id="positiveCount">0</p>
+        </div>
+        <div class="metric-container">
+            <i class="fas fa-frown negative-icon"></i>
+            <h2>Negative</h2>
+            <p id="negativeCount">0</p>
+        </div>
+        <div class="metric-container">
+            <i class="fas fa-meh neutral-icon"></i>
+            <h2>Neutral</h2>
+            <p id="neutralCount">0</p>
+        </div>
+        <div class="metric-container">
+            <i class="fas fa-question-circle irrelevant-icon"></i>
+            <h2>Irrelevant</h2>
+            <p id="irrelevantCount">0</p>
+        </div>
+    </div>
+</body>
+</html>

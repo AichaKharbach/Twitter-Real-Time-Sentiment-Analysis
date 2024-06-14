@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Twitter Sentiment Predictions</title>
     <style>
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
@@ -18,30 +20,75 @@
         h1 {
             color: #0056b3;
             text-align: center;
+            margin-bottom: 20px;
+            font-size: 36px;
+            text-shadow: 2px 2px #ccc;
         }
 
-        ul {
-            list-style-type: none;
-            padding: 0;
-            width: 100%; /* Adjust width as necessary */
+        nav {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        li {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            margin-top: 8px;
-            padding: 10px;
-            border-radius: 8px;
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #0056b3;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #003d80;
+            box-shadow: 0 6px 8px rgba(0,0,0,0.2);
+        }
+
+        table {
+            width: 100%;
+            max-width: 1200px;
+            border-collapse: collapse;
+            margin-top: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        #predictions li {
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        #predictions tbody {
             animation: fadeIn 0.5s;
         }
 
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+
+        th:first-child, td:first-child {
+            min-width: 100px; /* Adjust this value to set the desired minimum width */
         }
     </style>
     <script>
@@ -53,22 +100,36 @@
             const response = await fetch('/predictions');
             predictions = await response.json();
             loading = false;
-            document.getElementById('predictions').innerHTML = ''; // Clear the loading message
+            document.getElementById('predictions-body').innerHTML = ''; // Clear the loading message
             showNextPrediction();
         }
 
         function showNextPrediction() {
             if (predictions.length > 0 && !loading) {
                 const prediction = predictions[currentIndex];
-                const predictionText = `Tweet ID: ${prediction["Tweet ID"]}, Entity: ${prediction.Entity}, Content: ${prediction["Tweet content"]}, Prediction: ${prediction.prediction}`;
-                
-                const listItem = document.createElement('li');
-                listItem.innerText = predictionText;
-                document.getElementById('predictions').appendChild(listItem);
-                
+                const row = document.createElement('tr');
+
+                const tweetIdCell = document.createElement('td');
+                tweetIdCell.innerText = prediction["Tweet ID"];
+                row.appendChild(tweetIdCell);
+
+                const entityCell = document.createElement('td');
+                entityCell.innerText = prediction.Entity;
+                row.appendChild(entityCell);
+
+                const contentCell = document.createElement('td');
+                contentCell.innerText = prediction["Tweet content"];
+                row.appendChild(contentCell);
+
+                const predictionCell = document.createElement('td');
+                predictionCell.innerText = prediction.prediction;
+                row.appendChild(predictionCell);
+
+                document.getElementById('predictions-body').appendChild(row);
+
                 currentIndex = (currentIndex + 1) % predictions.length;
             } else if (loading) {
-                document.getElementById('predictions').innerText = "Loading predictions...";
+                document.getElementById('predictions-body').innerHTML = "<tr><td colspan='4'>Loading predictions...</td></tr>";
             }
         }
 
@@ -78,8 +139,21 @@
 </head>
 <body>
     <h1>Twitter Sentiment Predictions</h1>
-    <ul id="predictions">
-        <li>Loading predictions...</li>
-    </ul>
+    <nav>
+        <a href="/dashboard"><i class="fas fa-chart-bar"></i> Statistics</a>
+    </nav>
+    <table id="predictions">
+        <thead>
+            <tr>
+                <th>Tweet ID</th>
+                <th>Entity</th>
+                <th>Content</th>
+                <th>Prediction</th>
+            </tr>
+        </thead>
+        <tbody id="predictions-body">
+            <tr><td colspan="4">Loading predictions...</td></tr>
+        </tbody>
+    </table>
 </body>
 </html>
